@@ -13,4 +13,7 @@ build/*
 xcuserdata
 profile
 *.moved-aside
+<<<<<<< HEAD
 images/.com.apple.timemachine.supported
+=======
+>>>>>>> 4004d5ed20360a0b258ad20fc91c579e7e3bb7bd
