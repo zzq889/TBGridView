@@ -124,7 +124,7 @@ viewKeysToRemove = _viewKeysToRemove;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, self.frame.size.height);
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     if (self.orientation != orientation) {
         self.orientation = orientation;
