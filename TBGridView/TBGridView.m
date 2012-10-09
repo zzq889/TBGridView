@@ -93,6 +93,7 @@ viewKeysToRemove = _viewKeysToRemove;
         scrollView.pagingEnabled = YES;
         scrollView.alwaysBounceHorizontal = YES;
         scrollView.showsHorizontalScrollIndicator = NO;
+        scrollView.showsVerticalScrollIndicator = NO;
         scrollView.scrollsToTop = NO;
         self.scrollView = scrollView;
         [self addSubview:self.scrollView];
