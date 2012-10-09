@@ -88,7 +88,6 @@ viewKeysToRemove = _viewKeysToRemove;
         
         UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(_showsWidth, 0, self.bounds.size.width - _showsWidth * 2, self.bounds.size.height)];
         scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        scrollView.backgroundColor = [UIColor yellowColor];
         scrollView.delegate = self;
         scrollView.clipsToBounds = NO;
         scrollView.pagingEnabled = YES;
