@@ -22,6 +22,7 @@
 #pragma mark - Public Methods
 - (void)reloadData;
 - (TBGridViewCell *)dequeueReusableCell;
+- (TBGridViewCell *)cellAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 

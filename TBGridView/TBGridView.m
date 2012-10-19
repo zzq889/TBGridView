@@ -135,6 +135,15 @@ viewKeysToRemove = _viewKeysToRemove;
     }
 }
 
+- (id)cellAtIndexPath:(NSIndexPath *)indexPath
+{
+    TBGridViewCell *cell = [self.visibleCells objectForKey:indexPath];
+    if (cell) {
+        return cell;
+    }
+    return nil;
+}
+
 - (void)relayoutViews
 {
     // Reset all state
