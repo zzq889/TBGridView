@@ -145,7 +145,7 @@ viewKeysToRemove = _viewKeysToRemove;
     [self.visibleCells removeAllObjects];
     [self.viewKeysToRemove removeAllObjects];
     [self.sectionColumns removeAllObjects];
-//    [self.indexToRectMap removeAllObjects];
+    //    [self.indexToRectMap removeAllObjects];
     
     // This is where we should layout the entire grid first
     if (self.scrollView.subviews.count) {
@@ -198,7 +198,6 @@ viewKeysToRemove = _viewKeysToRemove;
     [self.visibleCells enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         NSIndexPath *indexPath = (NSIndexPath *)key;
         TBGridViewCell *cell = (TBGridViewCell *)obj;
-        CGRect viewRect = cell.frame;
         if (
             (currentSection && indexPath.section == currentSection - 1)
             || (currentSection < numColumns - 1 && indexPath.section == currentSection + 1)
@@ -206,9 +205,11 @@ viewKeysToRemove = _viewKeysToRemove;
             ) {
             // Find out what rows are visible
             UIScrollView *scrollView = [self.sectionColumns objectAtIndex:indexPath.section];
-            CGRect visibleRect = CGRectMake(scrollView.contentOffset.x, scrollView.contentOffset.y, scrollView.frame.size.width, scrollView.frame.size.height);
+            NSInteger numRows = [self.gridViewDataSource numberOfRowsInTBGridView:self forSection:indexPath.section];
+            NSInteger topRow = (scrollView.contentOffset.y - _topMargin) / _rowHeight;
+            NSInteger bottomRow = MIN((scrollView.contentOffset.y + _scrollView.frame.size.height - _topMargin) / _rowHeight + 1, numRows);
             
-            if (!CGRectIntersectsRect(visibleRect, viewRect)) {
+            if (indexPath.row < topRow || indexPath.row > bottomRow) {
                 [self enqueueReusableCell:cell];
                 [self.viewKeysToRemove addObject:key];
             }
