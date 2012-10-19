@@ -206,7 +206,7 @@ viewKeysToRemove = _viewKeysToRemove;
             // Find out what rows are visible
             UIScrollView *scrollView = [self.sectionColumns objectAtIndex:indexPath.section];
             NSInteger numRows = [self.gridViewDataSource numberOfRowsInTBGridView:self forSection:indexPath.section];
-            NSInteger topRow = (scrollView.contentOffset.y - _topMargin) / _rowHeight;
+            NSInteger topRow = MAX((scrollView.contentOffset.y - _topMargin) / _rowHeight, 0);
             NSInteger bottomRow = MIN((scrollView.contentOffset.y + _scrollView.frame.size.height - _topMargin) / _rowHeight + 1, numRows);
             
             if (indexPath.row < topRow || indexPath.row > bottomRow) {
@@ -227,7 +227,7 @@ viewKeysToRemove = _viewKeysToRemove;
     for (NSInteger sec = MAX(0, currentSection - 1); sec < MIN(numColumns, currentSection + 2); sec++) {
         UIScrollView *scrollView = [self.sectionColumns objectAtIndex:sec];
         NSInteger numRows = [self.gridViewDataSource numberOfRowsInTBGridView:self forSection:sec];
-        NSInteger topRow = (scrollView.contentOffset.y - _topMargin) / _rowHeight;
+        NSInteger topRow = MAX((scrollView.contentOffset.y - _topMargin) / _rowHeight, 0);
         NSInteger bottomRow = MIN((scrollView.contentOffset.y + _scrollView.frame.size.height - _topMargin) / _rowHeight + 1, numRows);
         NSInteger currentRow = topRow;
         while (currentRow < bottomRow) {
