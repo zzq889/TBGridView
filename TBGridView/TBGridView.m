@@ -121,6 +121,19 @@ viewKeysToRemove = _viewKeysToRemove;
     [self relayoutViews];
 }
 
+- (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths
+{
+    [indexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSIndexPath *indexPath = (NSIndexPath *)obj;
+        if (![self.visibleCells objectForKey:indexPath]) {
+            return;
+        }
+        
+        TBGridViewCell *cell = [self cellAtIndexPath:indexPath];
+        cell = [self.gridViewDataSource gridView:self cellForRowAtIndexPath:indexPath];
+    }];
+}
+
 #pragma mark - View
 
 - (void)layoutSubviews {
@@ -144,6 +157,30 @@ viewKeysToRemove = _viewKeysToRemove;
     return nil;
 }
 
+- (void)addSectionWithIndex:(NSInteger)colIdx{
+    UIScrollView *scrollView = [UIScrollView new];
+    CGRect columnFrame = CGRectMake(self.scrollView.bounds.size.width * colIdx, 0, self.scrollView.bounds.size.width, _rowHeight);
+    scrollView.frame = columnFrame;
+    scrollView.scrollsToTop = NO;
+    scrollView.clipsToBounds = NO;
+    scrollView.pagingEnabled = YES;
+    scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+    scrollView.alwaysBounceVertical = YES;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.delegate = self;
+    NSInteger numRows = [self.gridViewDataSource numberOfRowsInTBGridView:self forSection:colIdx];
+    scrollView.contentSize = CGSizeMake(columnFrame.size.width, _rowHeight * numRows);
+    
+    [self.scrollView addSubview:scrollView];
+    [self.sectionColumns addObject:scrollView];
+}
+
+- (void)removeLastSection {
+    UIScrollView *lastSection = [self.sectionColumns lastObject];
+    [lastSection removeFromSuperview];
+    [self.sectionColumns removeObject:lastSection];
+}
+
 - (void)relayoutViews
 {
     // Reset all state
@@ -153,40 +190,30 @@ viewKeysToRemove = _viewKeysToRemove;
     }];
     [self.visibleCells removeAllObjects];
     [self.viewKeysToRemove removeAllObjects];
-    [self.sectionColumns removeAllObjects];
-    //    [self.indexToRectMap removeAllObjects];
-    
-    // This is where we should layout the entire grid first
-    if (self.scrollView.subviews.count) {
-        [self.scrollView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            UIView *view = (UIView *)obj;
-            [view removeFromSuperview];
-        }];
-    }
+//    [self.sectionColumns removeAllObjects];
+//    //    [self.indexToRectMap removeAllObjects];
+//    
+//    // This is where we should layout the entire grid first
+//    if (self.scrollView.subviews.count) {
+//        [self.scrollView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+//            UIView *view = (UIView *)obj;
+//            [view removeFromSuperview];
+//        }];
+//    }
     
     NSInteger numCols = [self.gridViewDataSource numberOfSectionsInTBGridView:self];
-    CGRect columnFrame = CGRectMake(0, 0, self.scrollView.bounds.size.width, _rowHeight);
-    NSInteger colIdx = 0;
-    while (colIdx < numCols) {
-        UIScrollView *scrollView = [UIScrollView new];
-        scrollView.frame = columnFrame;
-        scrollView.scrollsToTop = NO;
-        scrollView.clipsToBounds = NO;
-        scrollView.pagingEnabled = YES;
-        scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
-        scrollView.alwaysBounceVertical = YES;
-        scrollView.showsVerticalScrollIndicator = NO;
-        scrollView.delegate = self;
-        columnFrame.origin.x += self.scrollView.bounds.size.width;
-        NSInteger numRows = [self.gridViewDataSource numberOfRowsInTBGridView:self forSection:colIdx];
-        scrollView.contentSize = CGSizeMake(columnFrame.size.width, _rowHeight * numRows);
-        
-        [self.scrollView addSubview:scrollView];
-        [self.sectionColumns addObject:scrollView];
-        colIdx++;
+    NSInteger numOriginCols = _sectionColumns.count;
+    if (numCols > numOriginCols) {
+        for (NSInteger idx = numOriginCols; idx < numOriginCols; idx++) {
+            [self addSectionWithIndex:idx];
+        }
+    } else if (numCols < numOriginCols) {
+        for (NSInteger idx = numCols; idx < numOriginCols; idx++) {
+            [self removeLastSection];
+        }
     }
     
-    self.scrollView.contentSize = CGSizeMake(columnFrame.origin.x, self.frame.size.height);
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.bounds.size.width * numCols, self.frame.size.height);
     [self removeAndAddCellsIfNecessary];
 }
 
@@ -296,13 +323,15 @@ viewKeysToRemove = _viewKeysToRemove;
 	} else {
         // select cell
         NSInteger currentSection = self.scrollView.contentOffset.x / self.scrollView.frame.size.width;
-        UIScrollView *scrollView = [self.sectionColumns objectAtIndex:currentSection];
-        for (UIView *view in [scrollView subviews]) {
-            if (CGRectContainsPoint(view.frame, CGPointMake(point.x - self.scrollView.frame.origin.x, point.y + scrollView.contentOffset.y))) {
-                return view;
+        if (currentSection < _sectionColumns.count) {
+            UIScrollView *scrollView = [self.sectionColumns objectAtIndex:currentSection];
+            for (UIView *view in [scrollView subviews]) {
+                if (CGRectContainsPoint(view.frame, CGPointMake(point.x - self.scrollView.frame.origin.x, point.y + scrollView.contentOffset.y))) {
+                    return view;
+                }
             }
+            return scrollView;
         }
-        return scrollView;
     }
 	return [super hitTest:point withEvent:event];
 }

@@ -24,6 +24,8 @@
 - (TBGridViewCell *)dequeueReusableCell;
 - (TBGridViewCell *)cellAtIndexPath:(NSIndexPath *)indexPath;
 
+- (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths;
+
 @end
 
 #pragma mark - Delegate
