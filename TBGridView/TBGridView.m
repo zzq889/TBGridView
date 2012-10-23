@@ -123,15 +123,15 @@ viewKeysToRemove = _viewKeysToRemove;
 
 - (void)reloadRowsAtIndexPaths:(NSArray *)indexPaths
 {
-    [indexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSIndexPath *indexPath = (NSIndexPath *)obj;
-        if (![self.visibleCells objectForKey:indexPath]) {
-            return;
-        }
-        
-        TBGridViewCell *cell = [self cellAtIndexPath:indexPath];
-        cell = [self.gridViewDataSource gridView:self cellForRowAtIndexPath:indexPath];
-    }];
+    //    [indexPaths enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    //        NSIndexPath *indexPath = (NSIndexPath *)obj;
+    //        if (![self.visibleCells objectForKey:indexPath]) {
+    //            return;
+    //        }
+    //
+    //        TBGridViewCell *cell = [self cellAtIndexPath:indexPath];
+    //        cell = [self.gridViewDataSource gridView:self cellForRowAtIndexPath:indexPath];
+    //    }];
 }
 
 #pragma mark - View
@@ -190,21 +190,21 @@ viewKeysToRemove = _viewKeysToRemove;
     }];
     [self.visibleCells removeAllObjects];
     [self.viewKeysToRemove removeAllObjects];
-//    [self.sectionColumns removeAllObjects];
-//    //    [self.indexToRectMap removeAllObjects];
-//    
-//    // This is where we should layout the entire grid first
-//    if (self.scrollView.subviews.count) {
-//        [self.scrollView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-//            UIView *view = (UIView *)obj;
-//            [view removeFromSuperview];
-//        }];
-//    }
+    //    [self.sectionColumns removeAllObjects];
+    //    //    [self.indexToRectMap removeAllObjects];
+    //
+    //    // This is where we should layout the entire grid first
+    //    if (self.scrollView.subviews.count) {
+    //        [self.scrollView.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    //            UIView *view = (UIView *)obj;
+    //            [view removeFromSuperview];
+    //        }];
+    //    }
     
     NSInteger numCols = [self.gridViewDataSource numberOfSectionsInTBGridView:self];
     NSInteger numOriginCols = _sectionColumns.count;
     if (numCols > numOriginCols) {
-        for (NSInteger idx = numOriginCols; idx < numOriginCols; idx++) {
+        for (NSInteger idx = numOriginCols; idx < numCols; idx++) {
             [self addSectionWithIndex:idx];
         }
     } else if (numCols < numOriginCols) {
