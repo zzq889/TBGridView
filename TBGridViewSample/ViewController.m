@@ -31,7 +31,7 @@
 	// Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor colorWithWhite:0.2 alpha:1];
     
-    TBGridView *gridView = [[TBGridView alloc] initWithFrame:CGRectMake(0, 40, self.view.bounds.size.width, self.view.bounds.size.height - 40)];
+    TBGridView *gridView = [[TBGridView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     [gridView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     gridView.gridViewDataSource = self;
     gridView.gridViewDelegate = self;
@@ -55,6 +55,19 @@
 - (NSInteger)numberOfRowsInTBGridView:(TBGridView *)gridView forSection:(NSInteger)section
 {
     return 10;
+}
+
+- (UIView *)gridView:(TBGridView *)gridView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectZero];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+    label.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    label.text = @"header";
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor whiteColor];
+    label.backgroundColor = [UIColor clearColor];
+    [view addSubview:label];
+    return view;
 }
 
 - (TBGridViewCell *)gridView:(TBGridView *)gridView cellForRowAtIndexPath:(NSIndexPath *)indexPath

@@ -46,6 +46,7 @@
 - (NSInteger)numberOfRowsInTBGridView:(TBGridView *)gridView forSection:(NSInteger)section;
 - (TBGridViewCell *)gridView:(TBGridView *)gridView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 @optional
+- (UIView *)gridView:(TBGridView *)gridView viewForHeaderInSection:(NSInteger)section;
 - (CGFloat)heightForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
